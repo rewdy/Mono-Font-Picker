@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "mono-font-picker",
+  "productName": "Mono Font Picker",
   "version": "0.1.0",
   "identifier": "com.ajmeyer.monofontpicker",
   "build": {
