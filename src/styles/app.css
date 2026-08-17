@@ -1,0 +1,282 @@
+/* =========================================================================
+   Layout — Swiss / International Typographic Style, dark.
+   All values pull from tokens.css so the whole system tunes from one file.
+   ========================================================================= */
+
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+/* --- Toolbar ------------------------------------------------------------ */
+.toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: stretch;
+  min-height: var(--toolbar-h);
+  background: var(--c-bg);
+  border-bottom: var(--rule-width) solid var(--c-rule);
+}
+
+.toolbar__brand,
+.toolbar__cell {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--s-2);
+  padding: var(--s-3) var(--s-5);
+  border-right: var(--rule-width) solid var(--c-rule);
+}
+
+.toolbar__brand {
+  gap: var(--s-1);
+  min-width: 180px;
+}
+
+.toolbar__title {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--lh-tight);
+}
+
+.toolbar__count {
+  font-size: var(--text-2xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--c-ink-muted);
+}
+
+.toolbar__cell {
+  min-width: 160px;
+}
+
+/* --- Controls ----------------------------------------------------------- */
+.control {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 100%;
+  color: var(--c-ink);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-tight);
+  padding: var(--s-1) 0;
+  border-bottom: var(--rule-width) solid var(--c-rule);
+  transition: border-color var(--dur-fast) var(--ease);
+}
+
+.control:hover {
+  border-color: var(--c-rule-strong);
+}
+
+.control:focus-visible {
+  outline: none;
+  border-color: var(--c-accent);
+}
+
+select.control {
+  padding-right: var(--s-4);
+  background-image: linear-gradient(45deg, transparent 50%, var(--c-ink-muted) 50%),
+    linear-gradient(135deg, var(--c-ink-muted) 50%, transparent 50%);
+  background-position:
+    right 4px center,
+    right 0 center;
+  background-size:
+    5px 5px,
+    5px 5px;
+  background-repeat: no-repeat;
+}
+
+.control option {
+  background: var(--c-surface);
+  color: var(--c-ink);
+}
+
+.control--range {
+  padding: 0;
+  border-bottom: none;
+  height: 20px;
+  background: transparent;
+}
+.control--range::-webkit-slider-runnable-track {
+  height: var(--rule-width);
+  background: var(--c-rule-strong);
+}
+.control--range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 4px;
+  height: 16px;
+  margin-top: -8px;
+  background: var(--c-accent);
+}
+
+/* Toggle switch (square, Swiss) */
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+}
+.toggle__track {
+  position: relative;
+  width: 34px;
+  height: 18px;
+  border: var(--rule-width) solid var(--c-rule-strong);
+  transition: background var(--dur-fast) var(--ease);
+}
+.toggle__thumb {
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  width: 14px;
+  height: 14px;
+  background: var(--c-ink-muted);
+  transition:
+    transform var(--dur-fast) var(--ease),
+    background var(--dur-fast) var(--ease);
+}
+.toggle[data-on="true"] .toggle__track {
+  background: var(--c-accent);
+  border-color: var(--c-accent);
+}
+.toggle[data-on="true"] .toggle__thumb {
+  transform: translateX(16px);
+  background: var(--c-accent-ink);
+}
+.toggle__state {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  min-width: 22px;
+}
+
+/* --- Body / grid -------------------------------------------------------- */
+.app__body {
+  flex: 1;
+  padding: var(--page-margin);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(460px, 1fr));
+  gap: var(--rule-width);
+  background: var(--c-rule);
+  border: var(--rule-width) solid var(--c-rule);
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
+/* --- Font card ---------------------------------------------------------- */
+.card {
+  display: flex;
+  flex-direction: column;
+  background: var(--c-bg);
+  padding: var(--s-5);
+  animation: card-in var(--dur) var(--ease) both;
+}
+
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.card__meta {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: baseline;
+  column-gap: var(--s-3);
+  row-gap: var(--s-3);
+  margin-bottom: var(--s-4);
+}
+
+.card__index {
+  color: var(--c-ink-faint);
+}
+
+.card__name {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--lh-snug);
+}
+
+.card__faces {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-1);
+}
+
+.badge {
+  font-size: var(--text-2xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--c-ink-muted);
+  padding: 2px var(--s-2);
+  border: var(--rule-width) solid var(--c-rule);
+  transition:
+    color var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease),
+    background var(--dur-fast) var(--ease);
+}
+.badge:hover {
+  border-color: var(--c-rule-strong);
+  color: var(--c-ink);
+}
+.badge[data-active="true"] {
+  color: var(--c-accent-ink);
+  background: var(--c-accent);
+  border-color: var(--c-accent);
+}
+
+/* --- Code preview (Shiki output) --------------------------------------- */
+.card__preview {
+  border-top: var(--rule-width) solid var(--c-rule);
+  overflow: hidden;
+}
+
+.card__preview pre.shiki {
+  margin: 0;
+  padding: var(--preview-pad);
+  overflow-x: auto;
+  line-height: var(--lh-body);
+  tab-size: 2;
+}
+
+/* Force the previewed font/size onto Shiki's markup (it only sets colors). */
+.card__preview pre.shiki,
+.card__preview pre.shiki code,
+.card__preview pre.shiki span {
+  font-family: inherit !important;
+  font-size: inherit !important;
+  font-weight: inherit !important;
+  font-style: inherit !important;
+  font-feature-settings: inherit !important;
+  font-variant-ligatures: inherit !important;
+}
+
+/* --- Notices ------------------------------------------------------------ */
+.notice {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: var(--s-6);
+  color: var(--c-ink-muted);
+  font-size: var(--text-sm);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  border: var(--rule-width) solid var(--c-rule);
+}
+.notice--error {
+  color: var(--c-accent);
+  border-color: var(--c-accent);
+  text-transform: none;
+  letter-spacing: var(--tracking-normal);
+  font-family: var(--font-ui);
+}
