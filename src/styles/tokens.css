@@ -47,6 +47,7 @@
   --rule-width: 1px;
   --radius: 0;
   --toolbar-h: 56px;
+  --col-compare-width: 440px;
 
   /* Preview defaults (overridden per-card at runtime) */
   --preview-pad: var(--s-5);

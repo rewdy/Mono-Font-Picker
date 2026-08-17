@@ -10,41 +10,37 @@ import {
 import { THEME_OPTIONS } from "../shiki";
 
 interface Props {
-  fontCount: number;
+  showLanguage?: boolean;
 }
 
-export function Toolbar({ fontCount }: Props) {
+// The four persisted preview settings, shared across every page's header.
+export function Controls({ showLanguage = true }: Props) {
   const [language, setLanguage] = useAtom(languageAtom);
   const [theme, setTheme] = useAtom(themeAtom);
   const [fontSize, setFontSize] = useAtom(fontSizeAtom);
   const [ligatures, setLigatures] = useAtom(ligaturesAtom);
 
   return (
-    <header className="toolbar">
-      <div className="toolbar__brand">
-        <span className="toolbar__title">Mono</span>
-        <span className="toolbar__count">
-          {fontCount} {fontCount === 1 ? "family" : "families"}
-        </span>
-      </div>
-
-      <div className="toolbar__cell">
-        <label className="label" htmlFor="tb-language">
-          Language
-        </label>
-        <select
-          id="tb-language"
-          className="control"
-          value={language}
-          onChange={(e) => setLanguage(e.target.value as Language)}
-        >
-          {LANGUAGE_OPTIONS.map((o) => (
-            <option key={o.id} value={o.id}>
-              {o.label}
-            </option>
-          ))}
-        </select>
-      </div>
+    <>
+      {showLanguage && (
+        <div className="toolbar__cell">
+          <label className="label" htmlFor="tb-language">
+            Language
+          </label>
+          <select
+            id="tb-language"
+            className="control"
+            value={language}
+            onChange={(e) => setLanguage(e.target.value as Language)}
+          >
+            {LANGUAGE_OPTIONS.map((o) => (
+              <option key={o.id} value={o.id}>
+                {o.label}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
 
       <div className="toolbar__cell">
         <label className="label" htmlFor="tb-theme">
@@ -96,6 +92,6 @@ export function Toolbar({ fontCount }: Props) {
           <span className="toggle__state">{ligatures ? "On" : "Off"}</span>
         </button>
       </div>
-    </header>
+    </>
   );
 }

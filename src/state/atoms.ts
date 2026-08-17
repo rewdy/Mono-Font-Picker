@@ -1,3 +1,4 @@
+import { atom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
 
 export type Language = "typescript" | "python" | "bash" | "filelisting";
@@ -16,3 +17,7 @@ export const languageAtom = atomWithStorage<Language>(
 export const themeAtom = atomWithStorage<string>("mfp.theme", "monokai");
 export const fontSizeAtom = atomWithStorage<number>("mfp.fontSize", 14);
 export const ligaturesAtom = atomWithStorage<boolean>("mfp.ligatures", true);
+
+// Ephemeral (in-memory) — intentionally not persisted across reloads.
+export const searchAtom = atom<string>("");
+export const compareAtom = atom<string[]>([]);

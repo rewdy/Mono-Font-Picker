@@ -1,4 +1,5 @@
 import { invoke } from "@tauri-apps/api/core";
+import type { CSSProperties } from "react";
 
 export interface FontFace {
   weight: number;
@@ -64,4 +65,22 @@ export function defaultFace(faces: FontFace[]): FontFace {
   return pool.reduce((best, f) =>
     Math.abs(f.weight - 400) < Math.abs(best.weight - 400) ? f : best,
   );
+}
+
+// CSS that renders a code sample in a given family/face at the current settings.
+// Shared by every preview surface so they stay visually identical.
+export function previewStyle(
+  family: string,
+  face: FontFace,
+  fontSize: number,
+  ligatures: boolean,
+): CSSProperties {
+  return {
+    fontFamily: `"${family}", monospace`,
+    fontSize: `${fontSize}px`,
+    fontWeight: face.weight,
+    fontStyle: face.italic ? "italic" : "normal",
+    fontFeatureSettings: ligatures ? '"liga" 1, "calt" 1' : '"liga" 0, "calt" 0',
+    fontVariantLigatures: ligatures ? "contextual common-ligatures" : "none",
+  };
 }

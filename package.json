@@ -15,7 +15,8 @@
     "jotai": "2.20.2",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "shiki": "4.4.3"
+    "shiki": "4.4.3",
+    "wouter": "3.10.0"
   },
   "devDependencies": {
     "@types/react": "^19.1.8",

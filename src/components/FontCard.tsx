@@ -1,10 +1,14 @@
 import { useMemo, useState } from "react";
+import { Link } from "wouter";
+import { useAtom } from "jotai";
 import {
   defaultFace,
   faceLabel,
+  previewStyle,
   type FontFace,
   type FontFamily,
 } from "../fonts";
+import { compareAtom } from "../state/atoms";
 
 interface Props {
   family: FontFamily;
@@ -16,22 +20,21 @@ interface Props {
 
 export function FontCard({ family, index, html, fontSize, ligatures }: Props) {
   const [face, setFace] = useState<FontFace>(() => defaultFace(family.faces));
+  const [compare, setCompare] = useAtom(compareAtom);
+  const selected = compare.includes(family.family);
 
-  const previewStyle = useMemo(
-    () => ({
-      fontFamily: `"${family.family}", monospace`,
-      fontSize: `${fontSize}px`,
-      fontWeight: face.weight,
-      fontStyle: face.italic ? "italic" : "normal",
-      fontFeatureSettings: ligatures
-        ? '"liga" 1, "calt" 1'
-        : '"liga" 0, "calt" 0',
-      fontVariantLigatures: ligatures
-        ? ("contextual common-ligatures" as const)
-        : ("none" as const),
-    }),
-    [family.family, fontSize, face, ligatures],
+  const style = useMemo(
+    () => previewStyle(family.family, face, fontSize, ligatures),
+    [family.family, face, fontSize, ligatures],
   );
+
+  function toggleCompare() {
+    setCompare((prev) =>
+      prev.includes(family.family)
+        ? prev.filter((f) => f !== family.family)
+        : [...prev, family.family],
+    );
+  }
 
   return (
     <article className="card">
@@ -39,9 +42,22 @@ export function FontCard({ family, index, html, fontSize, ligatures }: Props) {
         <span className="card__index label">
           {String(index + 1).padStart(2, "0")}
         </span>
-        <h2 className="card__name" style={{ fontFamily: previewStyle.fontFamily }}>
+        <Link
+          href={`/font/${encodeURIComponent(family.family)}`}
+          className="card__name"
+          style={{ fontFamily: style.fontFamily }}
+        >
           {family.family}
-        </h2>
+        </Link>
+        <label className="check" title="Add to comparison">
+          <input
+            type="checkbox"
+            checked={selected}
+            onChange={toggleCompare}
+          />
+          <span className="check__box" aria-hidden="true" />
+          <span className="check__label label">Compare</span>
+        </label>
         <div className="card__faces">
           {family.faces.map((f) => {
             const active = f.weight === face.weight && f.italic === face.italic;
@@ -62,7 +78,7 @@ export function FontCard({ family, index, html, fontSize, ligatures }: Props) {
 
       <div
         className="card__preview"
-        style={previewStyle}
+        style={style}
         dangerouslySetInnerHTML={{ __html: html }}
       />
     </article>

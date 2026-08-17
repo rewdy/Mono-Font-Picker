@@ -54,6 +54,16 @@
   min-width: 160px;
 }
 
+.toolbar__cell--grow {
+  flex: 1;
+  min-width: 200px;
+}
+
+.toolbar__cell--action {
+  justify-content: center;
+  min-width: 0;
+}
+
 /* --- Controls ----------------------------------------------------------- */
 .control {
   appearance: none;
@@ -189,7 +199,7 @@ select.control {
 
 .card__meta {
   display: grid;
-  grid-template-columns: auto 1fr;
+  grid-template-columns: auto 1fr auto;
   align-items: baseline;
   column-gap: var(--s-3);
   row-gap: var(--s-3);
@@ -205,6 +215,11 @@ select.control {
   font-weight: var(--weight-medium);
   letter-spacing: var(--tracking-tight);
   line-height: var(--lh-snug);
+  color: var(--c-ink);
+  text-decoration: none;
+}
+.card__name:hover {
+  color: var(--c-accent);
 }
 
 .card__faces {
@@ -279,4 +294,199 @@ select.control {
   text-transform: none;
   letter-spacing: var(--tracking-normal);
   font-family: var(--font-ui);
+}
+
+/* --- Search ------------------------------------------------------------- */
+.search {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.search__input {
+  width: 100%;
+  padding-right: 34px;
+}
+.search__input::placeholder {
+  color: var(--c-ink-faint);
+}
+.search__kbd {
+  position: absolute;
+  right: 0;
+  bottom: 4px;
+  font-family: var(--font-ui);
+  font-size: var(--text-2xs);
+  letter-spacing: var(--tracking-wide);
+  color: var(--c-ink-faint);
+  border: var(--rule-width) solid var(--c-rule);
+  padding: 1px 5px;
+  pointer-events: none;
+}
+
+/* --- Button ------------------------------------------------------------- */
+.button {
+  align-self: flex-start;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--c-accent-ink);
+  background: var(--c-accent);
+  border: var(--rule-width) solid var(--c-accent);
+  padding: var(--s-2) var(--s-4);
+  transition:
+    opacity var(--dur-fast) var(--ease),
+    background var(--dur-fast) var(--ease);
+}
+.button:hover:not(:disabled) {
+  opacity: 0.85;
+}
+.button:disabled {
+  color: var(--c-ink-faint);
+  background: transparent;
+  border-color: var(--c-rule);
+  cursor: not-allowed;
+}
+
+/* --- Compare checkbox (square, Swiss) ---------------------------------- */
+.check {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  cursor: pointer;
+  user-select: none;
+}
+.check input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.check__box {
+  width: 14px;
+  height: 14px;
+  border: var(--rule-width) solid var(--c-rule-strong);
+  transition:
+    background var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease);
+}
+.check input:checked + .check__box {
+  background: var(--c-accent);
+  border-color: var(--c-accent);
+}
+.check input:focus-visible + .check__box {
+  outline: var(--rule-width) solid var(--c-accent);
+  outline-offset: 2px;
+}
+.check__label {
+  color: var(--c-ink-muted);
+}
+.check:hover .check__label {
+  color: var(--c-ink);
+}
+
+/* --- Back link ---------------------------------------------------------- */
+.back {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-tight);
+  color: var(--c-ink);
+  text-decoration: none;
+}
+.back:hover {
+  color: var(--c-accent);
+}
+
+/* --- Font detail page --------------------------------------------------- */
+.detail {
+  max-width: 900px;
+  margin: 0 auto;
+}
+.detail__head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+  padding-bottom: var(--s-5);
+  border-bottom: var(--rule-width) solid var(--c-rule);
+  margin-bottom: var(--s-6);
+}
+.detail__name {
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--lh-tight);
+}
+.detail__stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-6);
+  margin-top: var(--s-2);
+}
+.detail__stats dt {
+  margin-bottom: var(--s-1);
+}
+.detail__stats dd {
+  font-size: var(--text-sm);
+  color: var(--c-ink);
+  max-width: 60ch;
+}
+.detail__samples {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-6);
+}
+.detail__sample {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+
+/* --- Compare page ------------------------------------------------------- */
+.app__body--flush {
+  padding: 0;
+}
+.compare {
+  display: flex;
+  align-items: stretch;
+  overflow-x: auto;
+  height: 100%;
+}
+.compare__col {
+  flex: 0 0 var(--col-compare-width);
+  display: flex;
+  flex-direction: column;
+  border-right: var(--rule-width) solid var(--c-rule);
+}
+.compare__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+  padding: var(--s-4) var(--s-5);
+  border-bottom: var(--rule-width) solid var(--c-rule);
+}
+.compare__name {
+  font-size: var(--text-md);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-tight);
+  color: var(--c-ink);
+  text-decoration: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.compare__name:hover {
+  color: var(--c-accent);
+}
+.compare__remove {
+  flex: none;
+  font-size: var(--text-lg);
+  line-height: 1;
+  color: var(--c-ink-faint);
+}
+.compare__remove:hover {
+  color: var(--c-accent);
+}
+.compare__col .card__preview {
+  flex: 1;
+  border-top: none;
 }

@@ -1,5 +1,6 @@
 import { createHighlighter, type Highlighter } from "shiki";
 import type { Language } from "./state/atoms";
+import { SNIPPETS } from "./snippets";
 
 export const THEME_OPTIONS: { id: string; label: string }[] = [
   { id: "monokai", label: "Monokai" },
@@ -31,4 +32,22 @@ export function getHighlighter(): Promise<Highlighter> {
     });
   }
   return highlighterPromise;
+}
+
+// Resolve a possibly-stale stored theme id to one this bundle actually has.
+export function safeTheme(theme: string): string {
+  return THEME_OPTIONS.some((t) => t.id === theme) ? theme : THEME_OPTIONS[0].id;
+}
+
+// Highlight a language's snippet. Shared by every page so highlighting logic
+// (and the safe-theme fallback) lives in one place.
+export function renderCode(
+  highlighter: Highlighter,
+  language: Language,
+  theme: string,
+): string {
+  return highlighter.codeToHtml(SNIPPETS[language], {
+    lang: shikiLang(language),
+    theme: safeTheme(theme),
+  });
 }
