@@ -58,13 +58,17 @@ in `src-tauri/` for Rust edits. There is no test suite yet.
   `shikiLang()` (maps `filelisting` → plain `text`), `safeTheme()` (stale-id
   fallback), and `renderCode()` (the one place that calls `codeToHtml`).
 - `snippets.ts` — the four code samples (typescript, python, bash, filelisting).
+  Each embeds a row of Nerd Font (Private Use Area) glyphs so patched fonts are
+  spotted at a glance; glyphs are built from `\u{...}` escapes, not literals
+  (see Gotchas).
 - `state/atoms.ts` — persisted + ephemeral jotai atoms (see storage keys below).
 - `components/Controls.tsx` — the four preview settings (language optional via
   `showLanguage`), reused in every page header.
 - `components/FontCard.tsx` — one family on the grid: name links to
   `/font/:family`, a compare checkbox, weight badges, and the reused Shiki HTML.
-- `pages/Home.tsx` — header (brand + count + search + `Controls` + compare
-  button) and the 2-col grid. Owns the Cmd/Ctrl-K search-focus listener.
+- `pages/Home.tsx` — header (brand + count + search + `Controls` + a 1/2
+  columns toggle + compare button) and the results grid. Owns the Cmd/Ctrl-K
+  search-focus listener.
 - `pages/FontView.tsx` — single column; family details + all four snippets
   stacked. Language picker hidden (shows every language at once).
 - `pages/Compare.tsx` — horizontal side-by-side scroll, one fixed-width column
@@ -76,7 +80,8 @@ in `src-tauri/` for Rust edits. There is no test suite yet.
 - `base.css` — reset + Helvetica Neue baseline + shared utilities.
 - `app.css` — layout/components, reading only from tokens.
 - Aesthetic: Swiss / International Typographic Style, **dark-mode only**,
-  hairline grid rules, square corners (`--radius: 0`), single red accent.
+  hairline grid rules, square corners (`--radius: 0`), one accent color
+  (`--c-accent`, currently purple; changed freely via that single token).
 
 ## Conventions (important)
 
@@ -104,6 +109,7 @@ Persisted (`atomWithStorage`, localStorage):
 - `mfp.theme` → Shiki theme id (default `monokai`)
 - `mfp.fontSize` → number px (default `14`)
 - `mfp.ligatures` → boolean (default `true`)
+- `mfp.columns` → `1 | 2` Home grid column count (default `2`)
 
 Ephemeral (plain `atom`, in-memory, reset on reload):
 - `searchAtom` → current search query (Home filter)
@@ -124,6 +130,12 @@ to the first theme if the id is unknown (guards against stale/removed themes).
 - Shiki's full bundle triggers a Vite ">500kB chunk" warning; it is lazy-loaded,
   so this is expected. To slim it, switch to `createHighlighterCore` with only
   the langs/themes in use.
+- **Nerd Font / PUA glyphs must be written as `\u{...}` escapes**, not pasted as
+  literal characters. Literal Private Use Area codepoints get stripped to spaces
+  when written to source files here; `snippets.ts` builds them from escapes so
+  the runtime string carries the real glyphs while the source stays ASCII-safe.
+- The macOS app bundle/display name is **Mono Font Picker** (`productName` in
+  `tauri.conf.json`); the crate/package name stays `mono-font-picker`.
 
 ## Current scope / not yet done
 

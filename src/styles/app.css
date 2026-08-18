@@ -177,6 +177,13 @@ select.control {
   margin: 0 auto;
 }
 
+.grid[data-columns="1"] {
+  grid-template-columns: 1fr;
+}
+.grid[data-columns="2"] {
+  grid-template-columns: repeat(2, 1fr);
+}
+
 /* --- Font card ---------------------------------------------------------- */
 .card {
   display: flex;
@@ -489,4 +496,31 @@ select.control {
 .compare__col .card__preview {
   flex: 1;
   border-top: none;
+}
+
+/* --- Segmented control (columns 1 / 2) --------------------------------- */
+.segmented {
+  display: inline-flex;
+  align-self: flex-start;
+  border: var(--rule-width) solid var(--c-rule-strong);
+}
+.segmented__option {
+  min-width: 28px;
+  padding: 2px var(--s-2);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--c-ink-muted);
+  transition:
+    color var(--dur-fast) var(--ease),
+    background var(--dur-fast) var(--ease);
+}
+.segmented__option + .segmented__option {
+  border-left: var(--rule-width) solid var(--c-rule-strong);
+}
+.segmented__option:hover {
+  color: var(--c-ink);
+}
+.segmented__option[data-active="true"] {
+  color: var(--c-accent-ink);
+  background: var(--c-accent);
 }

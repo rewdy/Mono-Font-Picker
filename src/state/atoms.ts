@@ -17,6 +17,7 @@ export const languageAtom = atomWithStorage<Language>(
 export const themeAtom = atomWithStorage<string>("mfp.theme", "monokai");
 export const fontSizeAtom = atomWithStorage<number>("mfp.fontSize", 14);
 export const ligaturesAtom = atomWithStorage<boolean>("mfp.ligatures", true);
+export const columnsAtom = atomWithStorage<1 | 2>("mfp.columns", 2);
 
 // Ephemeral (in-memory) — intentionally not persisted across reloads.
 export const searchAtom = atom<string>("");

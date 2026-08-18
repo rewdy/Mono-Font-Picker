@@ -6,6 +6,7 @@ import { FontCard } from "../components/FontCard";
 import { useFonts, useHighlighter } from "../data";
 import { renderCode } from "../shiki";
 import {
+  columnsAtom,
   compareAtom,
   fontSizeAtom,
   languageAtom,
@@ -24,6 +25,7 @@ export function Home() {
   const fontSize = useAtomValue(fontSizeAtom);
   const ligatures = useAtomValue(ligaturesAtom);
   const [search, setSearch] = useAtom(searchAtom);
+  const [columns, setColumns] = useAtom(columnsAtom);
   const compare = useAtomValue(compareAtom);
   const [, navigate] = useLocation();
 
@@ -86,6 +88,23 @@ export function Home() {
 
         <Controls />
 
+        <div className="toolbar__cell">
+          <span className="label">Columns</span>
+          <div className="segmented">
+            {([1, 2] as const).map((n) => (
+              <button
+                key={n}
+                type="button"
+                className="segmented__option"
+                data-active={columns === n}
+                onClick={() => setColumns(n)}
+              >
+                {n}
+              </button>
+            ))}
+          </div>
+        </div>
+
         <div className="toolbar__cell toolbar__cell--action">
           <span className="label">Compare</span>
           <button
@@ -111,7 +130,7 @@ export function Home() {
         )}
 
         {!error && fonts && highlighter && filtered.length > 0 && (
-          <div className="grid">
+          <div className="grid" data-columns={columns}>
             {filtered.map((family, i) => (
               <FontCard
                 key={family.family}

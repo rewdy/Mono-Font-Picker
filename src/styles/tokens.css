@@ -1,6 +1,6 @@
 :root {
-  /* Color — near-black canvas, off-white ink, single Swiss-red accent */
-  --c-bg: #0b0b0c;
+  /* Color — near-black canvas, off-white ink, single magenta accent */
+  --c-bg: #101012;
   --c-surface: #121214;
   --c-surface-2: #171719;
   --c-ink: #f4f4f2;
@@ -8,7 +8,7 @@
   --c-ink-faint: #6a6a67;
   --c-rule: rgba(255, 255, 255, 0.14);
   --c-rule-strong: rgba(255, 255, 255, 0.28);
-  --c-accent: #e4002b;
+  --c-accent: #7E57C2;
   --c-accent-ink: #ffffff;
 
   /* Type — Helvetica Neue, tight tracking at display sizes */
