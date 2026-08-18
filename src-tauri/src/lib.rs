@@ -1,4 +1,5 @@
 use std::collections::BTreeMap;
+use std::sync::OnceLock;
 
 use serde::Serialize;
 
@@ -10,21 +11,52 @@ struct FontFace {
     post_script_name: String,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Clone)]
 struct FontFamily {
     family: String,
     faces: Vec<FontFace>,
 }
 
-#[tauri::command]
-fn list_monospace_fonts() -> Vec<FontFamily> {
+// Detect monospace by measuring glyph advances. Many genuinely monospaced fonts
+// ship without the OpenType `post.isFixedPitch` flag that `fontdb` reads, so the
+// flag alone under-reports. If a spread of representative glyphs all share one
+// non-zero advance width, the face is fixed-pitch.
+fn is_monospace_by_metrics(db: &fontdb::Database, id: fontdb::ID) -> bool {
+    db.with_face_data(id, |data, index| {
+        let face = match ttf_parser::Face::parse(data, index) {
+            Ok(f) => f,
+            Err(_) => return false,
+        };
+
+        let samples = ['i', 'l', 'M', 'W', 'm', '0', 'x', ' ', '@'];
+        let mut widths = Vec::new();
+        for ch in samples {
+            if let Some(gid) = face.glyph_index(ch) {
+                if let Some(adv) = face.glyph_hor_advance(gid) {
+                    widths.push(adv);
+                }
+            }
+        }
+
+        // Require enough sampled glyphs to trust the verdict.
+        if widths.len() < 4 {
+            return false;
+        }
+        let first = widths[0];
+        first != 0 && widths.iter().all(|&w| w == first)
+    })
+    .unwrap_or(false)
+}
+
+fn compute_monospace_fonts() -> Vec<FontFamily> {
     let mut db = fontdb::Database::new();
     db.load_system_fonts();
 
     let mut families: BTreeMap<String, Vec<FontFace>> = BTreeMap::new();
 
     for face in db.faces() {
-        if !face.monospaced {
+        let is_mono = face.monospaced || is_monospace_by_metrics(&db, face.id);
+        if !is_mono {
             continue;
         }
 
@@ -60,6 +92,14 @@ fn list_monospace_fonts() -> Vec<FontFamily> {
             FontFamily { family, faces }
         })
         .collect()
+}
+
+#[tauri::command]
+fn list_monospace_fonts() -> Vec<FontFamily> {
+    // Enumeration + metric probing is done once per process, then cached; the
+    // font set doesn't change while the app runs.
+    static CACHE: OnceLock<Vec<FontFamily>> = OnceLock::new();
+    CACHE.get_or_init(compute_monospace_fonts).clone()
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]

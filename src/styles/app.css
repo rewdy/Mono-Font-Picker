@@ -172,7 +172,7 @@ select.control {
   grid-template-columns: repeat(auto-fill, minmax(460px, 1fr));
   gap: var(--rule-width);
   background: var(--c-rule);
-  border: var(--rule-width) solid var(--c-rule);
+  padding: var(--rule-width);
   max-width: var(--max-width);
   margin: 0 auto;
 }
@@ -182,6 +182,15 @@ select.control {
 }
 .grid[data-columns="2"] {
   grid-template-columns: repeat(2, 1fr);
+}
+
+/* Collapse the two-column grid to one when too narrow to fit both cards.
+   CSS custom properties can't be used in media queries, so this width is a
+   literal (~2x the 460px card min + padding). */
+@media (max-width: 960px) {
+  .grid[data-columns="2"] {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* --- Font card ---------------------------------------------------------- */
@@ -523,4 +532,19 @@ select.control {
 .segmented__option[data-active="true"] {
   color: var(--c-accent-ink);
   background: var(--c-accent);
+}
+
+/* --- Compare heading ---------------------------------------------------- */
+.compare__heading {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-1);
+  padding: var(--s-5) var(--page-margin);
+  border-bottom: var(--rule-width) solid var(--c-rule);
+}
+.compare__title {
+  font-size: var(--text-xl);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--lh-tight);
 }

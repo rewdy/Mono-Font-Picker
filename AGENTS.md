@@ -41,9 +41,17 @@ in `src-tauri/` for Rust edits. There is no test suite yet.
 
 ### Backend — `src-tauri/src/lib.rs`
 - Single command `list_monospace_fonts` returns `Vec<FontFamily>`.
-- Uses `fontdb::Database::load_system_fonts()`, keeps faces where
-  `monospaced == true`, skips hidden `.`-prefixed system fonts, groups by
-  family, dedupes faces by (weight, italic), sorts families A→Z.
+- Uses `fontdb::Database::load_system_fonts()`. A face counts as monospaced if
+  `fontdb`'s `monospaced` flag (OpenType `post.isFixedPitch`) is set **or** a
+  glyph-advance probe says so: `is_monospace_by_metrics()` parses the face with
+  `ttf-parser` and treats it as fixed-pitch when a spread of sample glyphs
+  (`i l M W m 0 x space @`) all share one non-zero advance width. The flag alone
+  under-reports (many Nerd Font/patched fonts omit it), so the metric probe is
+  the fallback.
+- Skips hidden `.`-prefixed system fonts, groups by family, dedupes faces by
+  (weight, italic), sorts families A→Z.
+- Enumeration + probing runs once per process and is cached in a `OnceLock`
+  (`CACHE`); the installed font set doesn't change while the app runs.
 - Serde renames fields to snake_case over the wire; the frontend remaps them.
 
 ### Frontend — `src/`

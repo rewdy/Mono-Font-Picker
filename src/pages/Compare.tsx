@@ -74,38 +74,44 @@ export function Compare() {
         )}
 
         {!error && fonts && highlighter && columns.length >= 2 && (
-          <div className="compare">
-            {columns.map((family) => {
-              const face = defaultFace(family.faces);
-              const style = previewStyle(family.family, face, fontSize, ligatures);
-              return (
-                <section className="compare__col" key={family.family}>
-                  <header className="compare__head">
-                    <Link
-                      href={`/font/${encodeURIComponent(family.family)}`}
-                      className="compare__name"
-                      style={{ fontFamily: style.fontFamily }}
-                    >
-                      {family.family}
-                    </Link>
-                    <button
-                      type="button"
-                      className="compare__remove"
-                      title="Remove"
-                      onClick={() => remove(family.family)}
-                    >
-                      ×
-                    </button>
-                  </header>
-                  <div
-                    className="card__preview"
-                    style={style}
-                    dangerouslySetInnerHTML={{ __html: html }}
-                  />
-                </section>
+          <>
+            <div className="compare__heading">
+              <span className="label">Comparing {columns.length} fonts</span>
+              <h1 className="compare__title">Compare</h1>
+            </div>
+            <div className="compare">
+              {columns.map((family) => {
+                const face = defaultFace(family.faces);
+                const style = previewStyle(family.family, face, fontSize, ligatures);
+                return (
+                  <section className="compare__col" key={family.family}>
+                    <header className="compare__head">
+                      <Link
+                        href={`/font/${encodeURIComponent(family.family)}`}
+                        className="compare__name"
+                        style={{ fontFamily: style.fontFamily }}
+                      >
+                        {family.family}
+                      </Link>
+                      <button
+                        type="button"
+                        className="compare__remove"
+                        title="Remove"
+                        onClick={() => remove(family.family)}
+                      >
+                        ×
+                      </button>
+                    </header>
+                    <div
+                      className="card__preview"
+                      style={style}
+                      dangerouslySetInnerHTML={{ __html: html }}
+                    />
+                  </section>
               );
             })}
-          </div>
+            </div>
+          </>
         )}
       </main>
     </div>
