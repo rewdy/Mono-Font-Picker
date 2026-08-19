@@ -1,0 +1,78 @@
+# Release: builds the real desktop app bundles and publishes them to a GitHub
+# Release. It runs when you push a version tag like `v0.1.0`, or when you
+# trigger it by hand from the Actions tab.
+#
+# How to cut a release:
+#   1. Bump the version in package.json, src-tauri/Cargo.toml and
+#      src-tauri/tauri.conf.json (keep all three in sync).
+#   2. Commit, then:  git tag v0.1.0 && git push origin v0.1.0
+#   3. Watch the Actions tab. A draft Release with the installers appears.
+#   4. Review the draft, then hit "Publish release".
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch: # lets you run it manually from the Actions tab
+
+# The release job needs write access to create the GitHub Release.
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Build ${{ matrix.target }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Apple Silicon (M1/M2/M3...)
+          - target: aarch64-apple-darwin
+            os: macos-latest
+          # Intel Macs
+          - target: x86_64-apple-darwin
+            os: macos-latest
+
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+
+      - name: Cache cargo build
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+
+      - name: Install JS dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Build and release the app
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # --- Optional macOS code signing + notarization ---
+          # The app builds fine without these, but users will see a Gatekeeper
+          # warning. To sign, add these repository secrets and uncomment.
+          # APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          # APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          # APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
+          # APPLE_ID: ${{ secrets.APPLE_ID }}
+          # APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+          # APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        with:
+          # tagName/releaseName use __VERSION__, which tauri-action replaces
+          # with the version from tauri.conf.json.
+          tagName: ${{ github.ref_type == 'tag' && github.ref_name || format('v{0}', github.run_number) }}
+          releaseName: "Mono Font Picker v__VERSION__"
+          releaseBody: "See the assets below to download and install."
+          releaseDraft: true
+          prerelease: false
+          args: --target ${{ matrix.target }}
