@@ -8,6 +8,20 @@ Built with Tauri v2 (Rust backend + system WebView) and React + TypeScript. Font
 enumeration and monospace detection happen natively in Rust via `fontdb`, which
 is the whole reason this is a desktop app and not a website.
 
+## Screenshots
+
+The main list, showing every monospaced family with a live preview per card:
+
+![Main font list](./assets/main-list.png)
+
+Font view, a single family rendered across all four code samples:
+
+![Single font view](./assets/view.png)
+
+Compare mode, selected fonts side by side in a horizontally scrolling layout:
+
+![Compare mode](./assets/compare.png)
+
 ## Features
 
 - Lists all installed monospaced font families, sorted A→Z.
